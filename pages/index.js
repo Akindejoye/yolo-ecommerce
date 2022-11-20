@@ -1,32 +1,59 @@
 import { useState, useEffect } from "react";
 import Product from "../components/Product";
+import { initMongoose } from "../lib/mongoose";
+import { findAllProducts } from "./api/products";
 
-export default function Home() {
-  const [productsInfo, setProductsInfo] = useState([]);
+export default function Home({ products }) {
+  const [phrase, setPhrase] = useState(""); // Search item
 
-  useEffect(() => {
-    fetch("/api/products")
-      .then((response) => response.json())
-      .then((data) => setProductsInfo(data));
-  }, []);
+  const categoriesNames = [...new Set(products.map((p) => p.category))];
 
-  const categoriesNames = [...new Set(productsInfo.map((p) => p.category))];
+  //Search Functionality
+  if (phrase) {
+    products = products.filter((p) => p.name.toLowerCase().includes(phrase));
+  }
 
   return (
     <div className="p-5">
+      <input
+        type="text"
+        placeholder="Search for products..."
+        className="bg-gray-100 w-full py-2 px-4 rounded-xl outline-none"
+        value={phrase}
+        onChange={(e) => setPhrase(e.target.value)}
+      />
       <div>
         {categoriesNames.map((categoryName) => (
           <div key={categoryName}>
-            <h2 className="text-2xl capitalize">{categoryName}</h2>
-            {productsInfo
-              .filter((p) => p.category === categoryName)
-              .map((productInfo, index) => (
-                <Product key={productInfo.name} {...productInfo} />
-              ))}
+            {products.find((p) => p.category === categoryName) && (
+              <div>
+                <h2 className="text-2xl py-5 capitalize">{categoryName}</h2>
+                <div className="flex -mx-5 overflow-x-scroll snap-x scrollbar-hide">
+                  {products
+                    .filter((p) => p.category === categoryName)
+                    .map((productInfo) => (
+                      <div key={productInfo._id} className="px-5 snap-start">
+                        <Product {...productInfo} />
+                      </div>
+                    ))}
+                </div>
+              </div>
+            )}
           </div>
         ))}
-        <div className="py-4"></div>
       </div>
     </div>
   );
+}
+
+// Server Side Rendering
+
+export async function getServerSideProps() {
+  await initMongoose();
+  const products = await findAllProducts();
+  return {
+    props: {
+      products: JSON.parse(JSON.stringify(products)),
+    },
+  };
 }
