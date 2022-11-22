@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import Footer from "../components/Footer";
+import Layout from "../components/Layout";
 import Product from "../components/Product";
 import { initMongoose } from "../lib/mongoose";
 import { findAllProducts } from "./api/products";
@@ -6,6 +8,7 @@ import { findAllProducts } from "./api/products";
 export default function Home({ products }) {
   const [phrase, setPhrase] = useState(""); // Search item
 
+  //Getting Categories Names
   const categoriesNames = [...new Set(products.map((p) => p.category))];
 
   //Search Functionality
@@ -14,7 +17,7 @@ export default function Home({ products }) {
   }
 
   return (
-    <div className="p-5">
+    <Layout>
       <input
         type="text"
         placeholder="Search for products..."
@@ -22,7 +25,7 @@ export default function Home({ products }) {
         value={phrase}
         onChange={(e) => setPhrase(e.target.value)}
       />
-      <div>
+      <div className="flex flex-col items-center">
         {categoriesNames.map((categoryName) => (
           <div key={categoryName}>
             {products.find((p) => p.category === categoryName) && (
@@ -42,7 +45,7 @@ export default function Home({ products }) {
           </div>
         ))}
       </div>
-    </div>
+    </Layout>
   );
 }
 
