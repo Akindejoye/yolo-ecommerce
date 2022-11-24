@@ -44,7 +44,7 @@ export default function CheckoutPage() {
       {!productsInfos.length && <div>no products in your shopping cart</div>}
       {productsInfos.length &&
         productsInfos.map((productInfo) => {
-          const amount = selectedProducts.filter(
+          const amount = selectedProducts?.filter(
             (id) => id === productInfo._id
           ).length;
           if (amount === 0) return;
@@ -72,7 +72,7 @@ export default function CheckoutPage() {
                     </button>
                     <span className="px-2">
                       {
-                        selectedProducts.filter((id) => id === productInfo._id)
+                        selectedProducts?.filter((id) => id === productInfo._id)
                           .length
                       }
                     </span>
@@ -140,7 +140,7 @@ export default function CheckoutPage() {
         <input
           type="hidden"
           name="products"
-          value={selectedProducts.join(",")}
+          value={selectedProducts?.join(",")}
         />
         <button
           type="submit"

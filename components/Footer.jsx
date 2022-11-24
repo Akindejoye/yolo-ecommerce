@@ -3,15 +3,14 @@ import { useRouter } from "next/router";
 import { useContext } from "react";
 import { ProductContext } from "../context/ProductContext";
 
-const Footer = () => {
+export default function Footer() {
   const router = useRouter();
   const path = router.pathname;
   const { selectedProducts } = useContext(ProductContext);
-
   return (
     <footer className="sticky bottom-0 bg-white p-5 w-full flex border-t border-gray-200 justify-center space-x-12 text-gray-400">
       <Link href={"/"}>
-        <div
+        <span
           className={
             (path === "/" ? "text-emerald-500" : "") +
             " flex justify-center items-center flex-col"
@@ -32,10 +31,10 @@ const Footer = () => {
             />
           </svg>
           <span>Home</span>
-        </div>
+        </span>
       </Link>
       <Link href={"/checkout"}>
-        <div
+        <span
           className={
             (path === "/checkout" ? "text-emerald-500" : "") +
             " flex justify-center items-center flex-col"
@@ -56,10 +55,8 @@ const Footer = () => {
             />
           </svg>
           <span>Cart {selectedProducts.length}</span>
-        </div>
+        </span>
       </Link>
     </footer>
   );
-};
-
-export default Footer;
+}
